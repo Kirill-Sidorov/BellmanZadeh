@@ -1,10 +1,30 @@
 package main
 
-import "bellmanzadeh/data"
+import (
+	"bellmanzadeh/data"
+	"fmt"
+)
 
 func main() {
 
-	data.ParseJsonData()
+	bellmanZadehData := data.ParseJsonData()
+
+	orderVariants := bellmanZadehData.Variants
+	//orderCriteria := bellmanZadehData.Criteriea
+	//comparisonVariants := make(map[string]*data.Matrix)
+
+	matrixCreation := data.NewConverter(orderVariants)
+
+	for _, value := range bellmanZadehData.ComparisonVariants {
+		matrix, err := matrixCreation.CreateComparisonMatrix(value.Variant, value.Comparisons)
+		if (err != nil) {
+			panic(err)
+		} else {
+			fmt.Println(matrix.ToText())
+		}
+	}
+
+
 
 	/*
 			server := http.NewServeMux()

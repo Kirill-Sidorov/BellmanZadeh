@@ -8,10 +8,10 @@ import (
 type Matrix struct {
 	nubmerRows    int
 	numberColumns int
-	matrix        [][]float32
+	matrix        [][]float64
 }
 
-func NewMatrix(matrix [][]float32) *Matrix {
+func NewMatrix(matrix [][]float64) *Matrix {
 	return &Matrix{
 		len(matrix),
 		len(matrix[0]),
@@ -19,8 +19,19 @@ func NewMatrix(matrix [][]float32) *Matrix {
 	}
 }
 
-func (m *Matrix) Get(i, j int) float32 {
+func (m *Matrix) Get(i, j int) float64 {
 	return m.matrix[i][j]
+}
+
+func (m *Matrix) ToText() string {
+	var result strings.Builder
+	for _, row := range m.matrix {
+		for _, value := range row {
+			result.WriteString(fmt.Sprintf("%6.2f", value))
+		}
+		result.WriteString("\n")
+	}
+	return result.String()
 }
 
 func (m *Matrix) ToTextAsTable(rowNames, columnNames []string) string {
