@@ -23,6 +23,14 @@ func (m *Matrix) Get(i, j int) float64 {
 	return m.matrix[i][j]
 }
 
+func (m *Matrix) GetNumberRows() int {
+	return m.nubmerRows
+}
+
+func (m *Matrix) GetNubmerColumns() int {
+	return m.numberColumns
+}
+
 func (m *Matrix) ToText() string {
 	var result strings.Builder
 	for _, row := range m.matrix {

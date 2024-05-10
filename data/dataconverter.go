@@ -36,7 +36,7 @@ func (c *Converter) CreateComparisonMatrix(variant string, comparisons []Compari
 	for i, value := range c.elementsOrder {
 
 		if value == variant {
-			knownRow = append(knownRow, 0)
+			knownRow = append(knownRow, 1)
 			knownRowNumber = i
 			continue
 		}

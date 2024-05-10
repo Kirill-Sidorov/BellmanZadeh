@@ -3,6 +3,7 @@ package main
 import (
 	"bellmanzadeh/data"
 	"fmt"
+	"strings"
 )
 
 func main() {
@@ -10,20 +11,64 @@ func main() {
 	bellmanZadehData := data.ParseJsonData()
 
 	orderVariants := bellmanZadehData.Variants
-	//orderCriteria := bellmanZadehData.Criteriea
-	//comparisonVariants := make(map[string]*data.Matrix)
+	comparisonVariants := make(map[string]*data.Matrix)
 
 	matrixCreation := data.NewConverter(orderVariants)
 
 	for _, value := range bellmanZadehData.ComparisonVariants {
 		matrix, err := matrixCreation.CreateComparisonMatrix(value.Variant, value.Comparisons)
-		if (err != nil) {
+		if err != nil {
 			panic(err)
-		} else {
-			fmt.Println(matrix.ToText())
+		}
+		comparisonVariants[value.Criterion] = matrix
+	}
+
+	orderCriteria := bellmanZadehData.Criteriea
+	for _, value := range orderCriteria {
+		if _, ok := comparisonVariants[value]; !ok {
+			panic("No comparisons found for criterion - " + value)
 		}
 	}
 
+	matrixCreation = data.NewConverter(orderCriteria)
+	matrix, err := matrixCreation.CreateComparisonMatrix(
+		bellmanZadehData.ComparisonCriteria.Criterion,
+		bellmanZadehData.ComparisonCriteria.Comparisons)
+
+	if (err != nil) {
+		panic("Failed to create criterion pairwise comparison matrix " + err.Error())
+	}	
+
+	var result strings.Builder
+	for key, value := range comparisonVariants {
+		result.WriteString(fmt.Sprintf("%s\n", key))
+		result.WriteString(value.ToTextAsTable(orderVariants, orderVariants))
+	}
+	result.WriteString("Matrix of paired comparisons of criteria:\n\n")
+	result.WriteString(matrix.ToTextAsTable(orderCriteria, orderCriteria))
+	
+	fmt.Println(result.String())
+
+	// solve part
+
+	// ranks of the pairwise comparison matrix
+	comparisonCriteriaRanks := make([]float64, 0, matrix.GetNubmerColumns())
+	for i := 0; i < matrix.GetNubmerColumns(); i++ {
+		var sum float64
+		for j := 0; j < matrix.GetNumberRows(); j++ {
+			sum += matrix.Get(j, i)
+		}
+		comparisonCriteriaRanks[i] = 1 / sum
+	}
+
+	// equilibrium criteria
+	minEquilibriumCriteria := make([]float64, 0, len(orderVariants))
+	for i := 0; i < len(orderVariants); i++ {
+		minEquilibriumCriteria[i] = 1
+	}
+
+	//equilibriumCriteria := make([][]float64, 0, len(orderCriteria))
+	
 
 
 	/*
