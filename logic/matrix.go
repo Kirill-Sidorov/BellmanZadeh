@@ -1,4 +1,4 @@
-package data
+package logic
 
 import (
 	"fmt"
@@ -50,7 +50,7 @@ func (m *Matrix) ToTextAsTable(rowNames, columnNames []string) string {
 		result.WriteString(fmt.Sprintf("%10.10s", value))
 	}
 	result.WriteString("\n")
-	
+
 	for i, rowName := range rowNames {
 		result.WriteString(fmt.Sprintf("%10.10s", rowName))
 		for j := range columnNames {

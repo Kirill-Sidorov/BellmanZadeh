@@ -1,27 +1,18 @@
-package data
+package logic
 
 import (
+	"bellmanzadeh/data"
 	"fmt"
 	"math"
 	"strconv"
 	"strings"
 )
 
-type Converter struct {
-	elementsOrder []string
-	matrixSize    int
-}
+func createComparisonMatrix(elementsOrder []string, variant string, comparisons []data.Comparison) (*Matrix, error) {
 
-func NewConverter(elementsOrder []string) *Converter {
-	return &Converter{
-		elementsOrder,
-		len(elementsOrder),
-	}
-}
+	matrixSize := len(elementsOrder)
 
-func (c *Converter) CreateComparisonMatrix(variant string, comparisons []Comparison) (*Matrix, error) {
-
-	if len(comparisons) != c.matrixSize-1 {
+	if len(comparisons) != matrixSize-1 {
 		return nil, fmt.Errorf("error: comparisons size not equals matrix size")
 	}
 
@@ -32,8 +23,8 @@ func (c *Converter) CreateComparisonMatrix(variant string, comparisons []Compari
 	}
 
 	knownRowNumber := 0
-	knownRow := make([]float64, 0, c.matrixSize)
-	for i, value := range c.elementsOrder {
+	knownRow := make([]float64, 0, matrixSize)
+	for i, value := range elementsOrder {
 
 		if value == variant {
 			knownRow = append(knownRow, 1)
@@ -77,17 +68,17 @@ func (c *Converter) CreateComparisonMatrix(variant string, comparisons []Compari
 		}
 	}
 
-	if (len(knownRow) != c.matrixSize) && (len(comparisonMap) != 0) {
+	if (len(knownRow) != matrixSize) && (len(comparisonMap) != 0) {
 		return nil, fmt.Errorf("error")
 	}
 
-	matrix := make([][]float64, 0, c.matrixSize)
-	for i := 0; i < c.matrixSize; i++ {
-		if (knownRowNumber != i) {
-			row := make([]float64, 0, c.matrixSize)
-			for j := 0; j < c.matrixSize; j++ {
+	matrix := make([][]float64, 0, matrixSize)
+	for i := 0; i < matrixSize; i++ {
+		if knownRowNumber != i {
+			row := make([]float64, 0, matrixSize)
+			for j := 0; j < matrixSize; j++ {
 				var value float64
-				if (i == j) {
+				if i == j {
 					value = 1
 				} else {
 					value = knownRow[j] / knownRow[i]
