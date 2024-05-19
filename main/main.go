@@ -6,11 +6,11 @@ import (
 	"bellmanzadeh/logic"
 	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
 	"strings"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
 
 	"github.com/go-echarts/go-echarts/v2/types"
@@ -30,7 +30,7 @@ func main() {
 
 type mainPageData struct {
 	ResultStringData string
-	*charts.Line
+	*components.Page
 }
 
 func baseHandler(writer http.ResponseWriter, request *http.Request) {
@@ -41,15 +41,24 @@ func baseHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 	stringResult := createStringResult(result)
 
-	line := charts.NewLine()
-	line.Renderer = customrender.NewCustomRender(&mainPageData{stringResult, line}, line.Validate)
-	line.SetGlobalOptions(
+	criterieaNumbers := make([]int, 0, len(result.OrderCriteria))
+	var criterieaSB strings.Builder
+	for i, value := range result.OrderCriteria {
+		num := i + 1
+		criterieaSB.WriteString(fmt.Sprintf("%s - %d\n", value, num))
+		criterieaNumbers = append(criterieaNumbers, num)
+	}
+	criterieaString := criterieaSB.String()
+
+	equilibriumCriteriaLine := charts.NewLine()
+	equilibriumCriteriaLine.SetGlobalOptions(
 		charts.WithInitializationOpts(opts.Initialization{Theme: types.ThemeWesteros}),
 		charts.WithTitleOpts(opts.Title{
 			Title: "Равновесные критерии",
+			Subtitle: criterieaString,
 		}))
 
-	line = line.SetXAxis(result.OrderCriteria)
+	equilibriumCriteriaLine = equilibriumCriteriaLine.SetXAxis(criterieaNumbers)
 
 	for j, variant := range result.OrderVariants {
 		matrix := result.EquilibriumCriteriaMatrix
@@ -57,10 +66,33 @@ func baseHandler(writer http.ResponseWriter, request *http.Request) {
 		for i := range result.OrderCriteria {
 			items = append(items, opts.LineData{Value: matrix.Get(i, j)})
 		}
-		line = line.AddSeries(variant, items)
+		equilibriumCriteriaLine = equilibriumCriteriaLine.AddSeries(variant, items)
 	}
 
-	err = line.Render(writer)
+	notEquilibriumCriteriaLine := charts.NewLine()
+	notEquilibriumCriteriaLine.SetGlobalOptions(
+		charts.WithInitializationOpts(opts.Initialization{Theme: types.ThemeWesteros}),
+		charts.WithTitleOpts(opts.Title{
+			Title: "Неравновесные критерии",
+			Subtitle: criterieaString,
+		}))
+
+	notEquilibriumCriteriaLine = notEquilibriumCriteriaLine.SetXAxis(criterieaNumbers)
+
+	for j, variant := range result.OrderVariants {
+		matrix := result.NotEquilibriumCriteriaMatrix
+		items := make([]opts.LineData, 0, len(result.OrderCriteria))
+		for i := range result.OrderCriteria {
+			items = append(items, opts.LineData{Value: matrix.Get(i, j)})
+		}
+		notEquilibriumCriteriaLine = notEquilibriumCriteriaLine.AddSeries(variant, items)
+	}
+
+	page := components.NewPage()
+	page.Renderer = customrender.NewCustomRender(&mainPageData{stringResult, page}, page.Validate)
+	page.AddCharts(equilibriumCriteriaLine, notEquilibriumCriteriaLine)
+
+	err = page.Render(writer)
 
 	if err != nil {
 		log.Println(err)
@@ -110,13 +142,4 @@ func createStringResult(result *logic.BellmanZadehResult) string {
 	}
 
 	return sb.String()
-}
-
-// generate random data for line chart
-func generateLineItems() []opts.LineData {
-	items := make([]opts.LineData, 0)
-	for i := 0; i < 7; i++ {
-		items = append(items, opts.LineData{Value: rand.Intn(300)})
-	}
-	return items
 }
