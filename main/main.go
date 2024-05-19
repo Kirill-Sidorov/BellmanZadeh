@@ -1,47 +1,74 @@
 package main
 
 import (
+	"bellmanzadeh/customrender"
 	"bellmanzadeh/data"
 	"bellmanzadeh/logic"
 	"fmt"
+	"log"
+	"math/rand"
 	"net/http"
 	"strings"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
+
 	"github.com/go-echarts/go-echarts/v2/types"
 )
 
 func main() {
+	server := http.NewServeMux()
+	server.HandleFunc("/", baseHandler)
+	server.HandleFunc("/favicon.ico", faviconHandler)
 
+	log.Println("Server Started...")
+	err := http.ListenAndServe("localhost:8080", server)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+type mainPageData struct {
+	ResultStringData string
+	*charts.Line
+}
+
+func baseHandler(writer http.ResponseWriter, request *http.Request) {
 	bellmanZadehData := data.ParseJsonData()
 	result, err := logic.SolveTask(bellmanZadehData)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(createStringResult(result))
+	stringResult := createStringResult(result)
 
-	//http.HandleFunc("/", httpserver)
-	//http.ListenAndServe(":8080", nil)
-	/*
-			server := http.NewServeMux()
-			server.HandleFunc("/", baseHandler)
-			server.HandleFunc("/favicon.ico", faviconHandler)
+	line := charts.NewLine()
+	line.Renderer = customrender.NewCustomRender(&mainPageData{stringResult, line}, line.Validate)
+	line.SetGlobalOptions(
+		charts.WithInitializationOpts(opts.Initialization{Theme: types.ThemeWesteros}),
+		charts.WithTitleOpts(opts.Title{
+			Title: "Равновесные критерии",
+		}))
 
-			log.Println("Server Started...")
-			err := http.ListenAndServe("localhost:8080", server)
-			if err != nil {
-				log.Fatal(err)
-			}
+	line = line.SetXAxis(result.OrderCriteria)
 
-			func baseHandler(writer http.ResponseWriter, request *http.Request) {
-
+	for j, variant := range result.OrderVariants {
+		matrix := result.EquilibriumCriteriaMatrix
+		items := make([]opts.LineData, 0, len(result.OrderCriteria))
+		for i := range result.OrderCriteria {
+			items = append(items, opts.LineData{Value: matrix.Get(i, j)})
 		}
+		line = line.AddSeries(variant, items)
+	}
 
-		func faviconHandler(writer http.ResponseWriter, request *http.Request) {
-			http.ServeFile(writer, request, "resources/favicon.ico")
-		}
-	*/
+	err = line.Render(writer)
+
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func faviconHandler(writer http.ResponseWriter, request *http.Request) {
+	http.ServeFile(writer, request, "resources/favicon.ico")
 }
 
 func createStringResult(result *logic.BellmanZadehResult) string {
@@ -89,27 +116,7 @@ func createStringResult(result *logic.BellmanZadehResult) string {
 func generateLineItems() []opts.LineData {
 	items := make([]opts.LineData, 0)
 	for i := 0; i < 7; i++ {
-		items = append(items, opts.LineData{XAxisIndex: 5, YAxisIndex: 3})
+		items = append(items, opts.LineData{Value: rand.Intn(300)})
 	}
 	return items
-}
-
-func httpserver(w http.ResponseWriter, _ *http.Request) {
-	// create a new line instance
-	line := charts.NewLine()
-	// set some global options like Title/Legend/ToolTip or anything else
-	line.SetGlobalOptions(
-		charts.WithInitializationOpts(opts.Initialization{Theme: types.ThemeWesteros}),
-		charts.WithTitleOpts(opts.Title{
-			Title:    "Line example in Westeros theme",
-			Subtitle: "Line chart rendered by the http server this time",
-		}))
-
-	// Put data into instance
-
-	line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
-		AddSeries("Category A", generateLineItems()).
-		AddSeries("Category B", generateLineItems()).
-		SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: false}))
-	line.Render(w)
 }
