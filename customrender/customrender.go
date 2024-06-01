@@ -2,19 +2,28 @@ package customrender
 
 import (
 	"bytes"
-	_ "embed"
 	"io"
+	"log"
+	"os"
 
 	"github.com/go-echarts/go-echarts/v2/render"
 	tpls "github.com/go-echarts/go-echarts/v2/templates"
 )
 
-//go:embed mainpage.tpl
-var mainpageTpl string
+var resultpageTpl string
 
 type customRender struct {
 	c      interface{}
 	before []func()
+}
+
+func Init() {
+    b, err := os.ReadFile("resources/resultpage.tpl")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    resultpageTpl = string(b)
 }
 
 func NewCustomRender(c interface{}, before ...func()) render.Renderer {
@@ -26,11 +35,11 @@ func (cR *customRender) Render(w io.Writer) error {
 		fn()
 	}
 
-	contents := []string{mainpageTpl, tpls.HeaderTpl, tpls.BaseTpl}
-	tpl := render.MustTemplate("mainpage", contents)
+	contents := []string{resultpageTpl, tpls.HeaderTpl, tpls.BaseTpl}
+	tpl := render.MustTemplate("resultpage", contents)
 
 	var buf bytes.Buffer
-	if err := tpl.ExecuteTemplate(&buf, "mainpage", cR.c); err != nil {
+	if err := tpl.ExecuteTemplate(&buf, "resultpage", cR.c); err != nil {
 		return err
 	}
 

@@ -2,9 +2,6 @@ package data
 
 import (
 	"encoding/json"
-	"io"
-	"log"
-	"os"
 )
 
 type Comparison struct {
@@ -30,23 +27,13 @@ type BellmanZadehData struct {
 	ComparisonCriteria ComparisonCriteria  `json:"comparison_criteria"`
 }
 
-func ParseJsonData() *BellmanZadehData {
-	filename, err := os.Open("resources/BellmanZadehData.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer filename.Close()
-
-	data, err := io.ReadAll(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
+func ParseJsonData(data string) (*BellmanZadehData, error) {
 
 	var result BellmanZadehData
-	err = json.Unmarshal(data, &result)
+	err := json.Unmarshal([]byte(data), &result)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return &result
+	return &result, nil
 }

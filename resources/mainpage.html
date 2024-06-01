@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bellman-Zadeh Task</title>
+    </head>
+    <script>
+        function prettyPrint() {
+            var ugly = document.getElementById('jsonData').value;
+            try {
+                var obj = JSON.parse(ugly);
+                var pretty = JSON.stringify(obj, undefined, 4);
+                document.getElementById('jsonData').value = pretty;
+            } catch (error) {
+            }
+        }
+    </script>
+    <style>
+        h2 {
+            color: red;
+        }
+        button {
+            margin: auto;
+        }
+    </style>
+    <body>
+        <div align="center">
+            <h2>{{.ErrorMessage}}</h2>
+            <table>
+                <tr>
+                    <form method="POST" id="jsonSendForm" action="/send"></form>
+                    <td>
+                        <textarea rows="30" cols="100" id="jsonData" name="jsonData" form="jsonSendForm" autofocus="true">
+                            {{.Json}}
+                        </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button onclick="prettyPrint()">
+                            Json Pretty Print
+                        </button>
+                        <button id="jsonSendButton" form="jsonSendForm" type="submit">
+                            Send Data
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
