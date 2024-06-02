@@ -53,7 +53,7 @@ func createComparisonMatrix(elementsOrder []string, variant string, comparisons 
 
 					doubleValue = roundFloat(numerator / denominator)
 				} else {
-					return nil, fmt.Errorf("error")
+					return nil, fmt.Errorf("error parse comparison value for %s: %s", value, stringValue)
 				}
 
 			} else {
@@ -69,7 +69,7 @@ func createComparisonMatrix(elementsOrder []string, variant string, comparisons 
 	}
 
 	if (len(knownRow) != matrixSize) && (len(comparisonMap) != 0) {
-		return nil, fmt.Errorf("error")
+		return nil, fmt.Errorf("error: input data not valid")
 	}
 
 	matrix := make([][]float64, 0, matrixSize)

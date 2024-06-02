@@ -23,6 +23,9 @@
 		<a href="/"><h2>Back to load new data json</h2></a>
 		<h1>Task Result:</h1>
 		<textarea rows="80" cols="100" readonly="true" wrap="off">{{.ResultStringData}}</textarea>
+		<br>
+		<h1>Graphs of equilibrium and nonequilibrium criteria:</h1>
+		<br>
 	</div>
 
 {{ if eq .Layout "none" }}
