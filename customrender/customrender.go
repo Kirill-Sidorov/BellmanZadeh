@@ -35,7 +35,7 @@ func (cR *customRender) Render(w io.Writer) error {
 		fn()
 	}
 
-	contents := []string{resultpageTpl, tpls.HeaderTpl, tpls.BaseTpl}
+	contents := []string{resultpageTpl, tpls.BaseTpl}
 	tpl := render.MustTemplate("resultpage", contents)
 
 	var buf bytes.Buffer

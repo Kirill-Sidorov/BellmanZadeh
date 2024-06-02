@@ -1,11 +1,27 @@
 {{- define "resultpage" }}
 <!DOCTYPE html>
 <html>
-    {{- template "header" . }}
+    <head>
+    <meta charset="utf-8">
+    <title>Bellman-Zadeh Task</title>
+	{{- range .JSAssets.Values }}
+    <script src="{{ . }}"></script>
+	{{- end }}
+	{{- range .CustomizedJSAssets.Values }}
+    <script src="{{ . }}"></script>
+	{{- end }}
+	{{- range .CSSAssets.Values }}
+    <link href="{{ . }}" rel="stylesheet">
+	{{- end }}
+	{{- range .CustomizedCSSAssets.Values }}
+    <link href="{{ . }}" rel="stylesheet">
+	{{- end }}
+</head>
 <body>
 
 	<div align="center">
-		<a href="/"><h2>Back to load json</h2></a>
+		<a href="/"><h2>Back to load new data json</h2></a>
+		<h1>Task Result:</h1>
 		<textarea rows="80" cols="100" readonly="true" wrap="off">{{.ResultStringData}}</textarea>
 	</div>
 

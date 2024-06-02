@@ -14,7 +14,7 @@ func main() {
 
 	server := http.NewServeMux()
 	server.HandleFunc("/", handler.MainPageHandler)
-	server.HandleFunc("/send", handler.ResultHandler)
+	server.HandleFunc("/solveTask", handler.ResultHandler)
 	server.HandleFunc("/favicon.ico", faviconHandler)
 
 	log.Println("Server Started...")

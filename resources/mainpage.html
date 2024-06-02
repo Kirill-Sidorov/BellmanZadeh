@@ -13,6 +13,10 @@
             } catch (error) {
             }
         }
+        function copyIntoInputDataArea() {
+            var example = document.getElementById("exampleTextArea").value;
+            document.getElementById('jsonData').value = example;
+        }
     </script>
     <style>
         h2 {
@@ -24,24 +28,90 @@
     </style>
     <body>
         <div align="center">
-            <h2>{{.ErrorMessage}}</h2>
+            <h1>Bellman-Zadeh approach to decision making</h1>
             <table>
                 <tr>
-                    <form method="POST" id="jsonSendForm" action="/send"></form>
                     <td>
-                        <textarea rows="30" cols="100" id="jsonData" name="jsonData" form="jsonSendForm" autofocus="true">
-                            {{.Json}}
-                        </textarea>
+                        <h4>Input data:</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <form method="POST" id="jsonSendForm" action="/solveTask"></form>
+                    <td>
+                        <textarea id="jsonData" rows="30" cols="100" name="jsonData" form="jsonSendForm" autofocus="true">{{.Json}}</textarea>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <button onclick="prettyPrint()">
-                            Json Pretty Print
+                            Format Json
                         </button>
-                        <button id="jsonSendButton" form="jsonSendForm" type="submit">
-                            Send Data
+                        <button id="solveTaskButton" form="jsonSendForm" type="submit">
+                            Solve Task
                         </button>
+                    </td>
+                </tr>
+            </table>
+            {{if .ErrorMessage}}
+            <h2>ERROR: {{.ErrorMessage}}</h2>
+            {{end}}
+            <br>
+            <h3>Data example (json example):</h3>
+            <table>
+                <tr>
+                    <td>
+                        <button onclick="copyIntoInputDataArea()">Copy into input data field</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <textarea id="exampleTextArea" rows="45" cols="100" readonly="true">
+{
+    "variants": [
+        "Company 1",
+        "Company 2",
+        "Company 3"
+    ],
+    "criteria": [
+        "Speed",
+        "Quality",
+        "Cost"
+    ],
+    "comparison_variants": [
+        {
+            "criterion": "Speed",
+            "variant": "Company 1",
+            "comparisons": [
+                {"name": "Company 2", "value": "1/3"},
+                {"name": "Company 3", "value": "1/6"}
+            ]
+        },
+        {
+            "criterion": "Quality",
+            "variant": "Company 1",
+            "comparisons": [
+                {"name": "Company 2", "value": "3"},
+                {"name": "Company 3", "value": "6"}
+            ]
+        },
+        {
+            "criterion": "Cost",
+            "variant": "Company 1",
+            "comparisons": [
+                {"name": "Company 2", "value": "2"},
+                {"name": "Company 3", "value": "4"}
+            ]
+        }
+    ],
+    "comparison_criteria": {
+        "criterion": "Speed",
+        "comparisons": [
+            {"name": "Quality", "value": "7"},
+            {"name": "Cost", "value": "4"}
+        ]
+    }
+}
+                    </textarea>
                     </td>
                 </tr>
             </table>
