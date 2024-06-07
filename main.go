@@ -17,7 +17,7 @@ func main() {
 	server.HandleFunc("/solveTask", handler.ResultHandler)
 	server.HandleFunc("/favicon.ico", faviconHandler)
 
-	log.Println("Server Started...")
+	log.Println("Server Started: http://localhost:8080")
 	err := http.ListenAndServe("localhost:8080", server)
 	if err != nil {
 		log.Fatal(err)
