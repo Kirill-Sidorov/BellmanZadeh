@@ -1,3 +1,18 @@
+# Decision-Making in Fuzzy Environment (Bellman-Zadeh approach to decision making)
+App for Decision-Making in Fuzzy Environment.
+
+[Description of the approach](https://www.researchgate.net/publication/336907770_Decision-Making_in_Fuzzy_Environment_A_Survey)
+
+### Images
+
+![start page](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/start_page.jpg)
+|:--:| 
+| *Image 1 - Start page* |
+![compare](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/result_page.jpg)
+| *Image 2 - Result page* |
+![storage manager](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/graphs_result_page.jpg)
+| *Image 3 - Result page (graphs)* |
+
 ### Required software
 * golang version 1.22.0 
 
