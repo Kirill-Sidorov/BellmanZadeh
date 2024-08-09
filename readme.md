@@ -15,10 +15,10 @@ App for Decision-Making in Fuzzy Environment.
 
 ### Images
 
-![start page](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/start_page.jpg)
+![Start page](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/start_page.jpg)
 |:--:| 
 | *Image 1 - Start page* |
-![compare](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/result_page.jpg)
+![Result page](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/result_page.jpg)
 | *Image 2 - Result page* |
-![storage manager](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/graphs_result_page.jpg)
+![Result page (graphs)](https://github.com/Kirill-Sidorov/BellmanZadeh/blob/readmedata/images/graphs_result_page.jpg)
 | *Image 3 - Result page (graphs)* |
